@@ -2,29 +2,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
 let currentEmotion = "";
 
-const products = {
-    happy: [
-        "Chocolate Box 🍫",
-        "Flowers Bouquet 🌸",
-        "Gift Hamper 🎁"
-    ],
-    sad: [
-        "Ice Cream 🍦",
-        "Comfort Hoodie 🧥",
-        "Motivational Book 📘"
-    ],
-    angry: [
-        "Stress Ball 🔴",
-        "Punching Bag 🥊",
-        "Gaming Console 🎮"
-    ],
-    relaxed: [
-        "Scented Candles 🕯️",
-        "Soft Music Playlist 🎵",
-        "Tea Set 🍵"
-    ]
-};
-
 const buttons = document.querySelectorAll("#emotions button");
 const productDiv = document.getElementById("products");
 const searchInput = document.getElementById("search");
@@ -40,8 +17,9 @@ buttons.forEach((button, index) => {
     });
 });
 
-function displayProducts(emotion, searchTerm = "") {
-    const items = products[emotion];
+async function displayProducts(emotion, searchTerm = "") {
+    const response = await fetch(`http://127.0.0.1:5000/products?emotion=${emotion}`);
+    const items = await response.json();
 
     productDiv.innerHTML = `<h2>${emotion.toUpperCase()} Products</h2>`;
 
@@ -49,19 +27,21 @@ function displayProducts(emotion, searchTerm = "") {
     container.classList.add("product-container");
 
     items
-        .filter(item => item.toLowerCase().includes(searchTerm))
-        .forEach(item => {
-            const card = document.createElement("div");
-            card.classList.add("product-card");
+    .filter(item => item.name.toLowerCase().includes(searchTerm))
+    .forEach(item => {
+        const card = document.createElement("div");
+        card.classList.add("product-card");
 
-            card.innerHTML = `
-                <h3>${item}</h3>
-                <p>Perfect for your mood!</p>
-                <button>Buy Now</button>
-            `;
+        card.innerHTML = `
+            <img src="${item.image}" alt="${item.name}" />
+            <h3>${item.name}</h3>
+            <p>${item.rating}</p>
+            <p><strong>${item.price}</strong></p>
+            <button>Buy Now</button>
+        `;
 
-            container.appendChild(card);
-        });
+        container.appendChild(card);
+    });
 
     productDiv.appendChild(container);
 }
