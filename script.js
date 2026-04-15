@@ -1,0 +1,1 @@
+console.log("Evora app started");
