@@ -1,1 +1,1 @@
-console.log("Evora app started");
+console.log("Evora Step 2 loaded");
