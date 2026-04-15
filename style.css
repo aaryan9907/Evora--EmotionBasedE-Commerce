@@ -1,134 +1,24 @@
-/* ===== GLOBAL STYLES ===== */
+/* ===== ROOT VARIABLES ===== */
+:root {
+    --bg-color: #f5f7fa;
+    --accent-color: #000;
+    --card-bg: #ffffff;
+    --text-color: #000;
+}
+
+/* ===== GLOBAL ===== */
 body {
     font-family: 'Segoe UI', sans-serif;
     margin: 0;
-    background: linear-gradient(to right, #f5f7fa, #e4ecf7);
+    background: var(--bg-color);
+    color: var(--text-color);
+    transition: all 0.5s ease;
 }
 
-/* Center content */
 #app {
     max-width: 1200px;
     margin: auto;
     text-align: center;
-}
-
-/* ===== HEADER ===== */
-h1 {
-    margin-top: 20px;
-    font-size: 40px;
-}
-
-p {
-    color: gray;
-}
-
-/* ===== EMOTION BUTTONS ===== */
-#emotions {
-    margin: 20px;
-}
-
-button {
-    margin: 10px;
-    padding: 10px 20px;
-    border: none;
-    background: linear-gradient(135deg, #000, #444);
-    color: white;
-    cursor: pointer;
-    border-radius: 8px;
-    transition: all 0.3s ease;
-}
-
-button:hover {
-    transform: scale(1.05);
-    background: linear-gradient(135deg, #222, #666);
-}
-
-/* ===== SEARCH BAR ===== */
-#search {
-    padding: 12px;
-    width: 300px;
-    margin: 15px;
-    border-radius: 25px;
-    border: none;
-    outline: none;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-}
-
-/* ===== PRODUCT SECTION ===== */
-#products {
-    margin-top: 20px;
-}
-
-/* ===== GRID LAYOUT ===== */
-.product-container {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: 25px;
-    padding: 20px;
-}
-
-/* ===== PRODUCT CARD ===== */
-.product-card {
-    background: white;
-    border-radius: 15px;
-    overflow: hidden;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    animation: fadeIn 0.5s ease;
-}
-
-/* Image styling */
-.product-card img {
-    width: 100%;
-    height: 180px;
-    object-fit: cover;
-    transition: transform 0.3s ease;
-}
-
-/* Content */
-.product-card h3 {
-    margin: 10px;
-    font-size: 18px;
-}
-
-.product-card p {
-    margin: 0 10px 10px;
-    color: gray;
-    font-size: 14px;
-}
-
-/* Button inside card */
-.product-card button {
-    margin: 10px;
-    padding: 8px;
-    width: 90%;
-    border: none;
-    background: black;
-    color: white;
-    border-radius: 6px;
-    cursor: pointer;
-}
-
-/* ===== HOVER EFFECTS ===== */
-.product-card:hover {
-    transform: translateY(-10px) scale(1.03);
-    box-shadow: 0 12px 30px rgba(0,0,0,0.25);
-}
-
-.product-card:hover img {
-    transform: scale(1.1);
-}
-
-/* ===== ANIMATIONS ===== */
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(20px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
 }
 
 /* ===== NAVBAR ===== */
@@ -137,7 +27,7 @@ button:hover {
     justify-content: space-between;
     align-items: center;
     padding: 15px 30px;
-    background: black;
+    background: var(--accent-color);
     color: white;
 }
 
@@ -153,4 +43,111 @@ button:hover {
 
 .nav-links span:hover {
     text-decoration: underline;
+}
+
+/* ===== HEADER ===== */
+h1 {
+    margin-top: 20px;
+    font-size: 40px;
+}
+
+p {
+    color: gray;
+}
+
+/* ===== BUTTONS ===== */
+#emotions {
+    margin: 20px;
+}
+
+button {
+    margin: 10px;
+    padding: 10px 20px;
+    border: none;
+    background: var(--accent-color);
+    color: white;
+    cursor: pointer;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+button:hover {
+    transform: scale(1.05);
+    opacity: 0.9;
+}
+
+/* ===== SEARCH ===== */
+#search {
+    padding: 12px;
+    width: 300px;
+    margin: 15px;
+    border-radius: 25px;
+    border: none;
+    outline: none;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+/* ===== PRODUCTS ===== */
+.product-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 25px;
+    padding: 20px;
+}
+
+/* ===== CARD ===== */
+.product-card {
+    background: var(--card-bg);
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    transition: all 0.3s ease;
+    animation: fadeIn 0.5s ease;
+}
+
+.product-card img {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.product-card h3 {
+    margin: 10px;
+}
+
+.product-card p {
+    margin: 0 10px 10px;
+    font-size: 14px;
+}
+
+/* Button inside card */
+.product-card button {
+    margin: 10px;
+    padding: 8px;
+    width: 90%;
+    background: var(--accent-color);
+    border-radius: 6px;
+}
+
+/* ===== HOVER EFFECT ===== */
+.product-card:hover {
+    transform: translateY(-10px) scale(1.03);
+    box-shadow: 0 0 20px var(--accent-color);
+}
+
+.product-card:hover img {
+    transform: scale(1.1);
+}
+
+/* ===== ANIMATION ===== */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
