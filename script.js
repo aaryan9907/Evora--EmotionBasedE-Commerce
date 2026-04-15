@@ -42,9 +42,21 @@ function displayProducts(emotion) {
 
     productDiv.innerHTML = `<h2>${emotion.toUpperCase()} Products</h2>`;
 
+    const container = document.createElement("div");
+    container.classList.add("product-container");
+
     items.forEach(item => {
-        const p = document.createElement("p");
-        p.textContent = item;
-        productDiv.appendChild(p);
+        const card = document.createElement("div");
+        card.classList.add("product-card");
+
+        card.innerHTML = `
+            <h3>${item}</h3>
+            <p>Perfect for your mood!</p>
+            <button>Buy Now</button>
+        `;
+
+        container.appendChild(card);
     });
+
+    productDiv.appendChild(container);
 }
