@@ -6,24 +6,24 @@ CORS(app)
 
 products = {
     "happy": [
-        "Chocolate Box 🍫",
-        "Flowers Bouquet 🌸",
-        "Gift Hamper 🎁"
+    {"name": "Chocolate Box", "image": "https://via.placeholder.com/150", "price": "₹499", "rating": "4.5⭐"},
+    {"name": "Flowers Bouquet", "image": "https://via.placeholder.com/150", "price": "₹799", "rating": "4.7⭐"},
+    {"name": "Gift Hamper", "image": "https://via.placeholder.com/150", "price": "₹999", "rating": "4.6⭐"}
     ],
     "sad": [
-        "Ice Cream 🍦",
-        "Comfort Hoodie 🧥",
-        "Motivational Book 📘"
+        {"name": "Ice Cream", "image": "https://via.placeholder.com/150"},
+        {"name": "Comfort Hoodie", "image": "https://via.placeholder.com/150"},
+        {"name": "Motivational Book", "image": "https://via.placeholder.com/150"}
     ],
     "angry": [
-        "Stress Ball 🔴",
-        "Punching Bag 🥊",
-        "Gaming Console 🎮"
+        {"name": "Stress Ball", "image": "https://via.placeholder.com/150"},
+        {"name": "Punching Bag", "image": "https://via.placeholder.com/150"},
+        {"name": "Gaming Console", "image": "https://via.placeholder.com/150"}
     ],
     "relaxed": [
-        "Scented Candles 🕯️",
-        "Soft Music Playlist 🎵",
-        "Tea Set 🍵"
+        {"name": "Scented Candles", "image": "https://via.placeholder.com/150"},
+        {"name": "Soft Music Playlist", "image": "https://via.placeholder.com/150"},
+        {"name": "Tea Set", "image": "https://via.placeholder.com/150"}
     ]
 }
 
@@ -39,6 +39,7 @@ def get_products():
         return jsonify(products.get(emotion, []))
 
     return jsonify(products)
+
 
 if __name__ == "__main__":
     app.run(debug=True)
