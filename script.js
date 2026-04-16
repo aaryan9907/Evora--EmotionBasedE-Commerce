@@ -1,12 +1,13 @@
 document.addEventListener("DOMContentLoaded", () => {
 
 let currentEmotion = "";
+let cachedProducts = [];
 
 const buttons = document.querySelectorAll("#emotions button");
 const productDiv = document.getElementById("products");
 const searchInput = document.getElementById("search");
 
-/* ===== BUTTON CLICK ===== */
+/* ===== EMOTION BUTTONS ===== */
 buttons.forEach((button, index) => {
     button.addEventListener("click", () => {
         if (index === 0) currentEmotion = "happy";
@@ -14,79 +15,148 @@ buttons.forEach((button, index) => {
         if (index === 2) currentEmotion = "angry";
         if (index === 3) currentEmotion = "relaxed";
 
-        setTheme(currentEmotion);   // 🔥 theme change
+        cachedProducts = []; // reset cache
+        setTheme(currentEmotion);
         displayProducts(currentEmotion);
     });
 });
 
-/* ===== FETCH + DISPLAY ===== */
+/* ===== NAVBAR BUTTONS ===== */
+document.getElementById("homeBtn").addEventListener("click", () => {
+    currentEmotion = "";
+    cachedProducts = [];
+    resetTheme();
+    searchInput.value = "";
+    productDiv.innerHTML = "<p>Select an emotion to explore products 💖</p>";
+});
+
+document.getElementById("happyBtn").addEventListener("click", () => {
+    currentEmotion = "happy";
+    cachedProducts = [];
+    setTheme(currentEmotion);
+    displayProducts(currentEmotion);
+});
+
+document.getElementById("sadBtn").addEventListener("click", () => {
+    currentEmotion = "sad";
+    cachedProducts = [];
+    setTheme(currentEmotion);
+    displayProducts(currentEmotion);
+});
+
+document.getElementById("angryBtn").addEventListener("click", () => {
+    currentEmotion = "angry";
+    cachedProducts = [];
+    setTheme(currentEmotion);
+    displayProducts(currentEmotion);
+});
+
+document.getElementById("relaxedBtn").addEventListener("click", () => {
+    currentEmotion = "relaxed";
+    cachedProducts = [];
+    setTheme(currentEmotion);
+    displayProducts(currentEmotion);
+});
+
+/* ===== FETCH + DISPLAY PRODUCTS ===== */
 async function displayProducts(emotion, searchTerm = "") {
-    const response = await fetch(`http://127.0.0.1:5000/products?emotion=${emotion}`);
-    const items = await response.json();
+    try {
+        // Only fetch once
+        if (cachedProducts.length === 0) {
+            productDiv.innerHTML = "<p>Loading products...</p>";
 
-    productDiv.innerHTML = `<h2>${emotion.toUpperCase()} Products</h2>`;
+            const response = await fetch(`http://127.0.0.1:5000/products?emotion=${emotion}`);
 
-    const container = document.createElement("div");
-    container.classList.add("product-container");
+            if (!response.ok) throw new Error("API failed");
 
-    items
-    .filter(item => item.name.toLowerCase().includes(searchTerm))
-    .forEach(item => {
-        const card = document.createElement("div");
-        card.classList.add("product-card");
+            cachedProducts = await response.json();
+        }
 
-        card.innerHTML = `
-            <img src="${item.image}" alt="${item.name}" />
-            <h3>${item.name}</h3>
-            <p>${item.rating}</p>
-            <p><strong>${item.price}</strong></p>
-            <button>Buy Now</button>
-        `;
+        renderProducts(cachedProducts, searchTerm);
 
-        container.appendChild(card);
-    });
-
-    productDiv.appendChild(container);
+    } catch (error) {
+        console.error(error);
+        productDiv.innerHTML = "<p>⚠️ Failed to load products</p>";
+    }
 }
 
 /* ===== SEARCH ===== */
 searchInput.addEventListener("input", () => {
     if (currentEmotion) {
-        displayProducts(currentEmotion, searchInput.value.toLowerCase());
+        renderProducts(cachedProducts, searchInput.value.toLowerCase());
     }
 });
 
 /* ===== THEME FUNCTION ===== */
 function setTheme(emotion) {
     const root = document.documentElement;
+    const body = document.body;
 
     if (emotion === "happy") {
-        root.style.setProperty("--bg-color", "#fff9db");
         root.style.setProperty("--accent-color", "#f59f00");
-        root.style.setProperty("--card-bg", "#fff3bf");
+        root.style.setProperty("--card-bg", "rgba(255, 243, 191, 0.9)");
         root.style.setProperty("--text-color", "#5c3d00");
+        body.style.backgroundImage = "url('images/happy-bg.png')";
     }
 
     if (emotion === "sad") {
-        root.style.setProperty("--bg-color", "#e7f0ff");
         root.style.setProperty("--accent-color", "#1c7ed6");
-        root.style.setProperty("--card-bg", "#dbe4ff");
+        root.style.setProperty("--card-bg", "rgba(219, 228, 255, 0.9)");
         root.style.setProperty("--text-color", "#1c3d5a");
+        body.style.backgroundImage = "url('images/sad-bg.png')";
     }
 
     if (emotion === "angry") {
-        root.style.setProperty("--bg-color", "#ffe3e3");
         root.style.setProperty("--accent-color", "#e03131");
-        root.style.setProperty("--card-bg", "#ffc9c9");
+        root.style.setProperty("--card-bg", "rgba(255, 201, 201, 0.9)");
         root.style.setProperty("--text-color", "#5a1c1c");
+        body.style.backgroundImage = "url('images/angry-bg.png')";
     }
 
     if (emotion === "relaxed") {
-        root.style.setProperty("--bg-color", "#e6fcf5");
         root.style.setProperty("--accent-color", "#099268");
-        root.style.setProperty("--card-bg", "#c3fae8");
+        root.style.setProperty("--card-bg", "rgba(195, 250, 232, 0.9)");
         root.style.setProperty("--text-color", "#1b4332");
+        body.style.backgroundImage = "url('images/relaxed-bg.png')";
     }
+}
+
+/* ===== RESET THEME ===== */
+function resetTheme() {
+    const root = document.documentElement;
+    const body = document.body;
+
+    root.style.setProperty("--accent-color", "#000");
+    root.style.setProperty("--card-bg", "#ffffff");
+    root.style.setProperty("--text-color", "#000");
+
+    body.style.backgroundImage = "url('images/homepage-bg.png')";
+}
+
+function renderProducts(items, searchTerm = "") {
+    productDiv.innerHTML = `<h2>${currentEmotion.toUpperCase()} Products</h2>`;
+
+    const container = document.createElement("div");
+    container.classList.add("product-container");
+
+    items
+        .filter(item => item.name.toLowerCase().includes(searchTerm))
+        .forEach(item => {
+            const card = document.createElement("div");
+            card.classList.add("product-card");
+
+            card.innerHTML = `
+                <img src="http://127.0.0.1:5000${item.image}" alt="${item.name}" />
+                <h3>${item.name}</h3>
+                <p>⭐ ${item.rating}</p>
+                <p><strong>${item.price}</strong></p>
+                <button>Buy Now</button>
+            `;
+
+            container.appendChild(card);
+        });
+
+    productDiv.appendChild(container);
 }
 
 });

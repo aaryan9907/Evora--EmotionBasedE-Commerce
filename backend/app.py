@@ -6,24 +6,24 @@ CORS(app)
 
 products = {
     "happy": [
-    {"name": "Chocolate Box", "image": "https://via.placeholder.com/150", "price": "₹499", "rating": "4.5⭐"},
-    {"name": "Flowers Bouquet", "image": "https://via.placeholder.com/150", "price": "₹799", "rating": "4.7⭐"},
-    {"name": "Gift Hamper", "image": "https://via.placeholder.com/150", "price": "₹999", "rating": "4.6⭐"}
+        {"name": "Chocolate Box", "image": "/static/images/chocolate.png", "price": "₹499", "rating": "4.5⭐"},
+        {"name": "Flowers Bouquet", "image": "/static/images/flowers.png", "price": "₹799", "rating": "4.7⭐"},
+        {"name": "Gift Hamper", "image": "/static/images/gift.png", "price": "₹4150", "rating": "4.6⭐"}
     ],
     "sad": [
-        {"name": "Ice Cream", "image": "https://via.placeholder.com/150"},
-        {"name": "Comfort Hoodie", "image": "https://via.placeholder.com/150"},
-        {"name": "Motivational Book", "image": "https://via.placeholder.com/150"}
+        {"name": "Ice Cream", "image": "/static/images/icecream.png", "price": "₹499", "rating": "4.8⭐"},
+        {"name": "Comfort Hoodie", "image": "/static/images/hoodie.png", "price": "₹499", "rating": "4.2⭐"},
+        {"name": "Motivational Book", "image": "/static/images/book.png", "price": "₹499", "rating": "4.5⭐"}
     ],
     "angry": [
-        {"name": "Stress Ball", "image": "https://via.placeholder.com/150"},
-        {"name": "Punching Bag", "image": "https://via.placeholder.com/150"},
-        {"name": "Gaming Console", "image": "https://via.placeholder.com/150"}
+        {"name": "Stress Ball", "image": "/static/images/ball.png", "price": "₹499", "rating": "4.1⭐"},
+        {"name": "Punching Bag", "image": "/static/images/punchingBag.png", "price": "₹1899", "rating": "4.0⭐"},
+        {"name": "Gaming Console", "image": "/static/images/console.png", "price": "₹49990", "rating": "4.7⭐"}
     ],
     "relaxed": [
-        {"name": "Scented Candles", "image": "https://via.placeholder.com/150"},
-        {"name": "Soft Music Playlist", "image": "https://via.placeholder.com/150"},
-        {"name": "Tea Set", "image": "https://via.placeholder.com/150"}
+        {"name": "Scented Candles", "image": "/static/images/candles.png", "price": "₹399", "rating": "4.2⭐"},
+        {"name": "Soft Music Playlist", "image": "/static/images/music.png", "price": "₹499", "rating": "4.5⭐"},
+        {"name": "Tea Set", "image": "/static/images/teaSet.png", "price": "₹9599", "rating": "4.5⭐"}
     ]
 }
 
