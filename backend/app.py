@@ -1,45 +1,115 @@
 from flask import Flask, jsonify, request
 from flask_cors import CORS
+from supabase import create_client
+from dotenv import load_dotenv
+import os
 
+# =========================
+# LOAD ENV VARIABLES
+# =========================
+load_dotenv()
+
+SUPABASE_URL = os.getenv("SUPABASE_URL")
+SUPABASE_KEY = os.getenv("SUPABASE_KEY")
+
+if not SUPABASE_URL or not SUPABASE_KEY:
+    raise Exception("❌ Missing Supabase environment variables")
+
+# =========================
+# INIT APP
+# =========================
 app = Flask(__name__)
-CORS(app)
+CORS(app, resources={r"/*": {"origins": "*"}})
 
-products = {
-    "happy": [
-        {"name": "Chocolate Box", "image": "/static/images/chocolate.png", "price": "₹499", "rating": "4.5⭐"},
-        {"name": "Flowers Bouquet", "image": "/static/images/flowers.png", "price": "₹799", "rating": "4.7⭐"},
-        {"name": "Gift Hamper", "image": "/static/images/gift.png", "price": "₹4150", "rating": "4.6⭐"}
-    ],
-    "sad": [
-        {"name": "Ice Cream", "image": "/static/images/icecream.png", "price": "₹499", "rating": "4.8⭐"},
-        {"name": "Comfort Hoodie", "image": "/static/images/hoodie.png", "price": "₹499", "rating": "4.2⭐"},
-        {"name": "Motivational Book", "image": "/static/images/book.png", "price": "₹499", "rating": "4.5⭐"}
-    ],
-    "angry": [
-        {"name": "Stress Ball", "image": "/static/images/ball.png", "price": "₹499", "rating": "4.1⭐"},
-        {"name": "Punching Bag", "image": "/static/images/punchingBag.png", "price": "₹1899", "rating": "4.0⭐"},
-        {"name": "Gaming Console", "image": "/static/images/console.png", "price": "₹49990", "rating": "4.7⭐"}
-    ],
-    "relaxed": [
-        {"name": "Scented Candles", "image": "/static/images/candles.png", "price": "₹399", "rating": "4.2⭐"},
-        {"name": "Soft Music Playlist", "image": "/static/images/music.png", "price": "₹499", "rating": "4.5⭐"},
-        {"name": "Tea Set", "image": "/static/images/teaSet.png", "price": "₹9599", "rating": "4.5⭐"}
-    ]
-}
+# =========================
+# INIT SUPABASE
+# =========================
+supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
 
+# =========================
+# HOME ROUTE
+# =========================
 @app.route("/")
 def home():
-    return "Evora Backend is Running 🚀"
+    return "Evora Backend (Supabase) 🚀"
 
+# =========================
+# GET PRODUCTS
+# =========================
 @app.route("/products", methods=["GET"])
 def get_products():
-    emotion = request.args.get("emotion")
+    try:
+        emotion = request.args.get("emotion")
 
-    if emotion:
-        return jsonify(products.get(emotion, []))
+        query = supabase.table("products").select("*")
 
-    return jsonify(products)
+        if emotion:
+            query = query.eq("emotion", emotion)
 
+        response = query.execute()
 
+        return jsonify(response.data)
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+# =========================
+# ADD PRODUCT (OPTIONAL CRUD)
+# =========================
+@app.route("/products", methods=["POST"])
+def add_product():
+    try:
+        data = request.json
+
+        response = supabase.table("products").insert({
+            "name": data.get("name"),
+            "image": data.get("image"),
+            "price": data.get("price"),
+            "rating": data.get("rating"),
+            "emotion": data.get("emotion")
+        }).execute()
+
+        return jsonify(response.data)
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+# =========================
+# UPDATE PRODUCT
+# =========================
+@app.route("/products/<int:product_id>", methods=["PUT"])
+def update_product(product_id):
+    try:
+        data = request.json
+
+        response = supabase.table("products") \
+            .update(data) \
+            .eq("id", product_id) \
+            .execute()
+
+        return jsonify(response.data)
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+# =========================
+# DELETE PRODUCT
+# =========================
+@app.route("/products/<int:product_id>", methods=["DELETE"])
+def delete_product(product_id):
+    try:
+        response = supabase.table("products") \
+            .delete() \
+            .eq("id", product_id) \
+            .execute()
+
+        return jsonify(response.data)
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+# =========================
+# RUN SERVER
+# =========================
 if __name__ == "__main__":
     app.run(debug=True)

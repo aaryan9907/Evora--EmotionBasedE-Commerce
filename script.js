@@ -7,87 +7,107 @@ const buttons = document.querySelectorAll("#emotions button");
 const productDiv = document.getElementById("products");
 const searchInput = document.getElementById("search");
 
-/* ===== EMOTION BUTTONS ===== */
+/* =========================
+   EMOTION BUTTONS
+========================= */
 buttons.forEach((button, index) => {
     button.addEventListener("click", () => {
-        if (index === 0) currentEmotion = "happy";
-        if (index === 1) currentEmotion = "sad";
-        if (index === 2) currentEmotion = "angry";
-        if (index === 3) currentEmotion = "relaxed";
 
-        cachedProducts = []; // reset cache
+        const emotions = ["happy", "sad", "angry", "relaxed"];
+        currentEmotion = emotions[index];
+
         setTheme(currentEmotion);
         displayProducts(currentEmotion);
     });
 });
 
-/* ===== NAVBAR BUTTONS ===== */
-document.getElementById("homeBtn").addEventListener("click", () => {
+/* =========================
+   NAVBAR BUTTONS
+========================= */
+document.getElementById("homeBtn").onclick = () => {
     currentEmotion = "";
     cachedProducts = [];
     resetTheme();
     searchInput.value = "";
     productDiv.innerHTML = "<p>Select an emotion to explore products 💖</p>";
+};
+
+["happy", "sad", "angry", "relaxed"].forEach(emotion => {
+    document.getElementById(emotion + "Btn").onclick = () => {
+        currentEmotion = emotion;
+        setTheme(emotion);
+        displayProducts(emotion);
+    };
 });
 
-document.getElementById("happyBtn").addEventListener("click", () => {
-    currentEmotion = "happy";
-    cachedProducts = [];
-    setTheme(currentEmotion);
-    displayProducts(currentEmotion);
-});
-
-document.getElementById("sadBtn").addEventListener("click", () => {
-    currentEmotion = "sad";
-    cachedProducts = [];
-    setTheme(currentEmotion);
-    displayProducts(currentEmotion);
-});
-
-document.getElementById("angryBtn").addEventListener("click", () => {
-    currentEmotion = "angry";
-    cachedProducts = [];
-    setTheme(currentEmotion);
-    displayProducts(currentEmotion);
-});
-
-document.getElementById("relaxedBtn").addEventListener("click", () => {
-    currentEmotion = "relaxed";
-    cachedProducts = [];
-    setTheme(currentEmotion);
-    displayProducts(currentEmotion);
-});
-
-/* ===== FETCH + DISPLAY PRODUCTS ===== */
-async function displayProducts(emotion, searchTerm = "") {
+/* =========================
+   FETCH + DISPLAY PRODUCTS
+========================= */
+async function displayProducts(emotion) {
     try {
-        // Only fetch once
-        if (cachedProducts.length === 0) {
-            productDiv.innerHTML = "<p>Loading products...</p>";
+        console.log("Fetching:", emotion);
 
-            const response = await fetch(`http://127.0.0.1:5000/products?emotion=${emotion}`);
+        const response = await fetch(`http://127.0.0.1:5000/products?emotion=${emotion}`);
 
-            if (!response.ok) throw new Error("API failed");
-
-            cachedProducts = await response.json();
+        if (!response.ok) {
+            throw new Error("Server error");
         }
 
-        renderProducts(cachedProducts, searchTerm);
+        const data = await response.json();
+
+        cachedProducts = data;
+
+        renderProducts(data);
 
     } catch (error) {
-        console.error(error);
+        console.error("ERROR:", error);
         productDiv.innerHTML = "<p>⚠️ Failed to load products</p>";
     }
 }
 
-/* ===== SEARCH ===== */
+/* =========================
+   RENDER PRODUCTS
+========================= */
+function renderProducts(items, searchTerm = "") {
+
+    productDiv.innerHTML = `<h2>${currentEmotion.toUpperCase()} Products</h2>`;
+
+    const container = document.createElement("div");
+    container.classList.add("product-container");
+
+    items
+        .filter(item => item.name.toLowerCase().includes(searchTerm))
+        .forEach(item => {
+
+            const card = document.createElement("div");
+            card.classList.add("product-card");
+
+            card.innerHTML = `
+                <img src="${item.image}" alt="${item.name}">
+                <h3>${item.name}</h3>
+                <p>⭐ ${item.rating}</p>
+                <p><strong>${item.price}</strong></p>
+                <button>Buy Now</button>
+            `;
+
+            container.appendChild(card);
+        });
+
+    productDiv.appendChild(container);
+}
+
+/* =========================
+   SEARCH
+========================= */
 searchInput.addEventListener("input", () => {
     if (currentEmotion) {
         renderProducts(cachedProducts, searchInput.value.toLowerCase());
     }
 });
 
-/* ===== THEME FUNCTION ===== */
+/* =========================
+   THEME FUNCTION
+========================= */
 function setTheme(emotion) {
     const root = document.documentElement;
     const body = document.body;
@@ -121,42 +141,18 @@ function setTheme(emotion) {
     }
 }
 
-/* ===== RESET THEME ===== */
+/* =========================
+   RESET THEME
+========================= */
 function resetTheme() {
     const root = document.documentElement;
     const body = document.body;
 
     root.style.setProperty("--accent-color", "#000");
-    root.style.setProperty("--card-bg", "#ffffff");
-    root.style.setProperty("--text-color", "#000");
+    root.style.setProperty("--card-bg", "rgba(255,255,255,0.15)");
+    root.style.setProperty("--text-color", "#ffffff");
 
     body.style.backgroundImage = "url('images/homepage-bg.png')";
-}
-
-function renderProducts(items, searchTerm = "") {
-    productDiv.innerHTML = `<h2>${currentEmotion.toUpperCase()} Products</h2>`;
-
-    const container = document.createElement("div");
-    container.classList.add("product-container");
-
-    items
-        .filter(item => item.name.toLowerCase().includes(searchTerm))
-        .forEach(item => {
-            const card = document.createElement("div");
-            card.classList.add("product-card");
-
-            card.innerHTML = `
-                <img src="http://127.0.0.1:5000${item.image}" alt="${item.name}" />
-                <h3>${item.name}</h3>
-                <p>⭐ ${item.rating}</p>
-                <p><strong>${item.price}</strong></p>
-                <button>Buy Now</button>
-            `;
-
-            container.appendChild(card);
-        });
-
-    productDiv.appendChild(container);
 }
 
 });
